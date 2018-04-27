@@ -1,0 +1,347 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Hand Application Platform</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="format-detection" content="telephone=no">
+    <meta name="_csrf" content="9f0dab07-79ce-4dbf-b0be-0185c9b437c5"/>
+    <meta name="_csrf_header" content="X-CSRF-TOKEN" />
+    <link href="/resources/upload/favicon.png?v=20180426164750" rel="shortcut icon"/>
+    <!--[if IE 8]>
+    <script src="/lib/polyfill/respond.min.js"></script>
+    <script src="/lib/polyfill/es5-shim.min.js"></script>
+    <![endif]-->
+    <script src="/lib/kendoui/js/jquery.min.js"></script>
+    <script src="/lib/kendoui/js/kendo.all.min.js?v=20180205"></script>
+    <script src="/lib/kendoui/js/jszip.min.js"></script>
+
+    <link href="/lib/bootstrap-3.3.7/css/bootstrap.min.css" rel="stylesheet" type="text/css"/>
+    <link href="/lib/font-awesome-4.6.3/css/font-awesome.min.css" rel="stylesheet" type="text/css"/>
+
+    <link href="/lib/kendoui/styles/kendo.common-bootstrap.min.css?v=20180205" rel="stylesheet" type="text/css"/>
+    <link href="/lib/kendoui/styles/kendo.bootstrap.min.css?v=20180205" rel="stylesheet" type="text/css"/>
+
+    <!-- <link href="/lib/kendoui/styles/kendo.common.min.css" rel="stylesheet" type="text/css"/>
+    <link href="/lib/kendoui/styles/kendo.uniform.min.css" rel="stylesheet" type="text/css"/> -->
+
+    <link href="/lib/kendoui/styles/kendo.hap.css?v=20180205" rel="stylesheet" type="text/css"/>
+    <script src="/lib/kendoui/js/cultures/kendo.culture.zh-CN.js?v=20180205"></script>
+    <script src="/lib/kendoui/js/messages/kendo.messages.zh-CN.js?v=20180205"></script>
+    <script src="/lib/kendoui/js/kendo.hap.js?v=20180205"></script>
+    <script src="/lib/assets/global/plugins/jquery.blockui.min.js"></script>
+
+    <script>
+        _basePath = '', _locale = 'zh_CN';
+        kendo.culture("zh-CN");
+        _currentFunctionCode = '';
+        window.accessConfig = {};
+        hotKeys = [];
+    </script>
+    <script src="/common/hotkey"></script>
+    <script src="/common/prompts"></script>
+</head>
+<script src="/lib/bootstrap-3.3.7/js/bootstrap.min.js"></script>
+
+<body style="padding: 5px">
+
+<div id="messageWindows"></div>
+
+<div id="main-content" style="margin-bottom: 45px">
+    <ul class="nav nav-tabs" id="mytab">
+        <li class="active"><a href="#main-info" data-toggle="tab">任务参数</a></li>
+        <li class=""><a href="#notify-info" data-toggle="tab">结束通知</a></li>
+    </ul>
+    <div id="tabContent" class="tab-content">
+        <div class="tab-pane fade in active" style="margin-top: 20px;" id="main-info">
+            <div class="panel-body form-horizontal" id="addjobtitle">
+                <div class="form-group required-input">
+                    <label class="col-sm-2 control-label">
+                        任务名称                    </label>
+                    <div class="col-sm-4">
+                        <input style="width:100%" name="jobName" data-label='任务名称' required type="text" data-bind="value:model.jobName" class="k-textbox">
+                    </div>
+                    <label class="col-sm-2 control-label">
+                        任务组                    </label>
+                    <div class="col-sm-4">
+                        <input style="width:100%" name="jobGroup" data-label='任务组' id="jobGroup" required type="text" data-bind="value:model.jobGroup" class="k-textbox">
+                    </div>
+                </div>
+                <div class="form-group required-input">
+                    <label class="col-sm-2 control-label">
+                        任务描述                    </label>
+                    <div class="col-sm-10">
+                        <input style="width:100%" type="text" class="k-textbox" data-bind="value:model.description">
+                    </div>
+                </div>
+                <div class="form-group required-input">
+                    <label class="col-xs-2 col-sm-2 col-md-2 control-label">
+                        任务类名                    </label>
+                    <div class="col-xs-10 col-sm-10 col-md-10">
+                        <input name="jobClassName" style="width:100%" data-label='任务类名' required type="text" data-bind="value:model.jobClassName" class="k-textbox"/>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-xs-2 col-sm-2 control-label">
+                        开始时间                    </label>
+                    <div class="col-xs-4 col-sm-4">
+                        <input style="width:100%" id="startTime" data-bind="value:model.start">
+                    </div>
+                    <label class="col-xs-2 col-sm-2 control-label">
+                        结束时间                    </label>
+                    <div class="col-xs-4 col-sm-4">
+                        <input style="width:100%" id="endTime" data-bind="value:model.end">
+                    </div>
+                </div>
+                <div class="form-group required-input">
+                    <label class="col-sm-2 control-label">
+                        重复间隔                    </label>
+                    <div class="col-sm-2">
+                        <input name="repeatinterval" id="repeatinterval" onkeyup='this.value=this.value.replace(/\D/gi,"")' data-label='重复间隔' required style="width:100%" data-bind="value:model.repeatInterval">
+                    </div>
+                    <label class="col-sm-2 control-label">
+                        重复次数                    </label>
+                    <div class="col-sm-2">
+                        <input style="width:100%" id="repeatcount" onkeyup='this.value=this.value.replace(/\D/gi,"")' data-bind="value:model.repeatCount" >
+                    </div>
+                    <label class="col-sm-2 control-label">
+                        触发器优先级                    </label>
+                    <div class="col-sm-2">
+                        <input name="priority" id="priority" onkeyup='this.value=this.value.replace(/\D/gi,"")' data-label='触发器优先级' style="width:100%" data-bind="value:model.priority">
+                    </div>
+                </div>
+                <div id="userAttribute" style="clear: both"></div>
+            </div>
+        </div>
+        <div class="tab-pane fade" style="margin-top: 20px;" id="notify-info">
+            <div class="panel-body form-horizontal">
+                <div class="form-group">
+                    <label class="col-sm-2 control-label">
+                        启用通知                    </label>
+                    <div class="col-sm-10" style="line-height:27px;">
+                        <input id="job_internal_notification" type="checkbox" data-field="job_internal_notification" data-bind="checked:model.job_internal_notification"/>
+                    </div>
+                </div>
+                <!-- <div class="form-group">
+                     <label class="col-sm-2 control-label">账户代码
+                     </label>
+                     <div class="col-sm-10">
+                         <input id="job_internal_email_account" name="accountCode" type=text
+                                data-bind="value:model.job_internal_email_account"
+                                style="width:50%"
+                               />
+                     </div>
+                     <script>
+                         $("#job_internal_email_account").kendoLov($.extend({"queryColumns":1,"height":350,"width":500,"readonly":true,"dataValueField":"accountCode","dataTextField":"userName","title":"选择邮件账户","form":"<div class='form-group' style='width:100%'><label class='col-sm-3 control-label' >账户代码</label><div class='col-sm-9 k-lov-input' ><input name='accountCode' data-bind='value:data.accountCode' style='width:100%'></div></div><div class='form-group' style='width:100%'><label class='col-sm-3 control-label' >用户名</label><div class='col-sm-9 k-lov-input' ><input name='userName' data-bind='value:data.userName' style='width:100%'></div></div>","formItemMap":{"accountCode":{"type":"kendoMaskedTextBox"},"userName":{"type":"kendoMaskedTextBox"}},"grid":{"height":350,"url":"/common/lov/MESSAGE_ACCOUNT","columns":[{"field":"accountCode","title":"账户代码","width":200,"attributes":{"style":"text-align:left"}},{"field":"userName","title":"用户名","width":200,"attributes":{"style":"text-align:left"}}],"pageSize":"10"},"idField":null,"parentIdField":null,"tree":false}, {}))
+                     </script>
+                 </div>-->
+                <div class="form-group">
+                    <label class="col-sm-2 control-label">
+                        邮件地址                    </label>
+                    <div class="col-sm-10">
+                        <input id="job_internal_emailAddress" type="text" data-bind="value:model.job_internal_emailAddress" class="k-textbox" style="width: 50%">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-sm-2 control-label">模板代码
+                    </label>
+                    <div class="col-sm-10">
+                        <input id="job_internal_email_template" name="templateCode" type=text
+                               data-bind="value:model.job_internal_email_template"
+                               style="width:50%"
+                        />
+                    </div>
+                    <script>
+                        $("#job_internal_email_template").kendoLov($.extend({"queryColumns":1,"height":350,"width":500,"readonly":true,"dataValueField":"templateCode","dataTextField":"templateCode","title":"选择模板","form":"<div class='form-group' style='width:100%'><label class='col-sm-3 control-label' >模板代码</label><div class='col-sm-9 k-lov-input' ><input name='templateCode' data-bind='value:data.templateCode' style='width:100%'></div></div><div class='form-group' style='width:100%'><label class='col-sm-3 control-label' >模板名称</label><div class='col-sm-9 k-lov-input' ><input name='description' data-bind='value:data.description' style='width:100%'></div></div>","formItemMap":{"description":{"type":"kendoMaskedTextBox"},"templateCode":{"type":"kendoMaskedTextBox"}},"grid":{"height":350,"url":"/common/lov/MESSAGE_TEMPLATE","columns":[{"field":"templateCode","title":"模板代码","width":200,"attributes":{"style":"text-align:left"}},{"field":"description","title":"模板名称","width":200,"attributes":{"style":"text-align:left"}}],"pageSize":"10"},"idField":null,"parentIdField":null,"tree":false}, {}))
+                    </script>
+                </div>
+                <div class="form-group">
+                    <label class="col-sm-2 control-label">
+                    </label>
+                    <div class="col-sm-10">
+                        <small class="help-block">邮件模版的内容可以使用如下表达式：<br/> ${jobName}---任务名称
+                            <br/>${scheduledFireTime}---任务结束时间 <br/>${status}----执行结果
+                        </small>
+                    </div>
+
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>
+<div class="text-right" style="bottom: 0px;padding-bottom:15px; position: fixed;  float: left;padding-top:15px;border-top:1px solid #ebebeb;width:100%; background: #fff;">
+    <span id="save_data" class="btn btn-primary" style="margin-right:5px">保存</span>
+    <span class="btn btn-default" id="cancel" type="button" style="margin-right:25px;">取消</span>
+</div>
+<script type="text/javascript">
+
+    $(document).ready(function () {
+
+        var tempWindowsStatus = 0;
+
+        viewModel = kendo.observable({
+            model: {
+                triggerType: 'SIMPLE',
+                jobGroup: 'DEFAULT',
+                repeatInterval: 60,
+                repeatCount: '0',
+                priority: 5
+            }
+        });
+        kendo.bind($('#main-content'), viewModel);
+        var dataSource = new kendo.data.DataSource({
+            transport: {
+                read: {},
+                parameterMap: function (options, type) {
+                    if (type !== 'read') {
+                        return kendo.stringify(Hap.prepareSubmitParameter(options, type));
+                    }
+                }
+            },
+            batch: true,
+            schema: {
+                data: 'rows',
+                total: 'total',
+                model: {}
+            }
+        });
+
+        $("#userAttribute").kendoGrid({
+            dataSource: dataSource,
+            height: 256,
+            navigatable: true,
+            resizable: true,
+            scrollable: true,
+            toolbar: [
+                {
+                    name: "create",
+                    template: '<span class="btn btn-primary k-grid-add">新建</span>'
+                },
+                {
+                    name: "cancel",
+                    template: '<span class="btn btn-default k-grid-cancel-changes">取消</span>'
+                }
+            ],
+            columns: [
+                {
+                    field: "name",
+                    title: '参数名称',
+                    width: 230
+                },
+                {
+                    field: "value",
+                    title: '参数值',
+                    width: 230
+                },
+                {
+                    title: '操作',
+                    command: ["destroy"],
+                    width: 100
+                }
+            ],
+            editable: true
+        });
+
+        $("#startTime").kendoDateTimePicker({
+            format: "yyyy-MM-dd HH:mm:ss",
+            timeFormat: "HH:mm",
+            change: function () {
+                var startTime = $("#startTime").val();
+                var endFinal = $("#endTime").data("kendoDateTimePicker");
+                endFinal.min(startTime);
+            }
+        });
+
+        $("#endTime").kendoDateTimePicker({
+            format: "yyyy-MM-dd HH:mm:ss",
+            change: function () {
+                var endTime = $("#endTime").val();
+                var startFinal = $("#startTime").data("kendoDateTimePicker");
+                startFinal.max(endTime);
+            }
+        });
+
+        $("#repeatinterval").kendoNumericTextBox({
+            value: 60,
+            format: "0",
+            min:0
+        })
+
+        $("#repeatcount").kendoNumericTextBox({
+            value: 0,
+            format: "0",
+            min:-1
+        });
+
+        $("#priority").kendoNumericTextBox({
+            format: "0",
+        });
+
+
+        var validator =  $("#addjobtitle").kendoValidator({
+            messages: {
+                required: '{0}不能为空！'
+            },
+            invalidMessageType : "tooltip"
+        }).data("kendoValidator");
+
+        $("#messageWindows").kendoWindow({
+            width: 400,
+            height: 150,
+            title: '提示',
+            visible: false,
+            close: function (e) {
+                $("#messageWindows").empty();
+                tempWindowsStatus = 0;
+            }
+        }).data("kendoWindow");
+
+        $("#cancel").click(function(){
+            window.parent.$("#dialog").data("kendoWindow").close();
+        });
+
+        $("#save_data").click(function () {
+
+            if (validator.validate()) {
+                var informations = viewModel.model;
+                var start = viewModel.model.start, end = viewModel.model.end;
+                informations.startTime = start ? start.getTime() : null;
+                informations.endTime = end ? end.getTime() : null;
+                //var lists;
+                var jobDatas = [{
+                    name: 'job_internal_notification',
+                    value: $("#job_internal_notification").is(':checked')
+                }, {
+                    name: 'job_internal_emailAddress',
+                    value: $("#job_internal_emailAddress").val()
+                },{
+                    name: 'job_internal_email_account',
+                    value: $("#job_internal_email_account").val()
+                },{
+                    name: 'job_internal_email_template',
+                    value: $("#job_internal_email_template").val()
+                }]
+                var tableDatas = dataSource.data();
+                for (var i = 0; i < tableDatas.length; i++) {
+                    jobDatas.push({
+                        name: tableDatas[i].name,
+                        value: tableDatas[i].value,
+                        __status: 'add'
+                    });
+                }
+                informations.jobDatas = jobDatas;
+                Hap.request({
+                    url: '/job/create',
+                    type: 'POST',
+                    data: kendo.stringify(informations),
+                    success: function (json) {
+                        window.parent.viewModel.refresh();
+                        window.parent.$("#dialog").data("kendoWindow").close();
+                    }
+                });
+            }
+        });
+    });
+</script>
+</body>

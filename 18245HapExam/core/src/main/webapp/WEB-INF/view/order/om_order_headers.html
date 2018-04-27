@@ -1,0 +1,274 @@
+<#include "../include/header.html">
+
+
+<body>
+
+<script type="text/javascript">
+    var viewModel = Hap.createGridViewModel("#grid");
+
+</script>
+<div id="page-content">
+    <form class="form-horizontal">
+        <div class="panel-body">
+            <div id="editForm">
+                <div class="col-xs-4">
+                    <div class="form-group">
+                        <label class="col-xs-3 control-label">订单编号</label>
+                        <div class="col-xs-9">
+                            <input id="orderNumber" name="orderNumber" data-role="maskedtextbox" type="text"
+                                   style="width: 100%" class="k-textbox"
+
+                                   required data-bind="value: model.orderNumber"/>
+                            <script>kendo.bind($('#orderNumber'), viewModel);</script>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-xs-4">
+                    <div class="form-group">
+                        <label class="col-xs-3 control-label">订单状态</label>
+                        <div class="col-xs-9">
+                            <input id="orderStatus" name="orderStatus" type="text" style="width: 100%"
+                                   data-role="maskedtextbox"
+                                   required data-bind="value: model.orderStatus"/>
+
+                            <script>
+                                $("#orderStatus").kendoDropDownList({
+                                    dataSource: [
+                                        {text: "新建", code: "新建"},
+                                        {text: "已提交", code: "已提交"},
+                                        {text: "已审批", code: "已审批"},
+                                        {text: "已拒绝", code: "已拒绝"}],
+                                    dataTextField: "text",
+                                    dataValueField: "code",
+                                    valuePrimitive: true
+                                });
+                                kendo.bind($('#orderStatus'), viewModel);
+                            </script>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-xs-4">
+                    <div class="form-group">
+                        <label class="col-xs-3 control-label">公司名称</label>
+                        <div class="col-xs-9">
+                            <input id="companyId" name="companyId" data-role="maskedtextbox" type="text"
+                                   style="width: 100%"  class="k-textbox"
+
+                                   required data-bind="value:model.companyId"/>
+                            <script>kendo.bind($('#companyId'), viewModel);</script>
+                        </div>
+                    </div>
+                </div>
+
+                <!--server 服务类型-->
+                <div class="col-xs-4">
+                    <div class="form-group">
+                        <label class="col-xs-3 control-label">客户名称</label>
+                        <div class="col-xs-9">
+                            <input id="customerId" name="customerId" type="text" style="width: 100%"
+                                   data-role="maskedtextbox"
+                                   required data-bind="value: model.customerId"/>
+                            <script>kendo.bind($('#customerId'), viewModel);</script>
+                        </div>
+                    </div>
+                </div>
+                <script>
+                $("#companyId").kendoLov($.extend(${lovProvider.getLov(base.contextPath, base.locale, "LOV_ORDER_COM")}, {
+                select: function (e) {
+                viewModel.model.set("customerId", null);
+
+                },
+                change: function () {
+                viewModel.model.set("customerId", null);
+                }
+                }));
+                //客户名称lov
+                $("#customerId").kendoLov($.extend(${lovProvider.getLov(base.contextPath, base.locale, "LOV_ORDER_CUS")}, {
+                query: function (e) {
+                e.param["companyId"] = $("#companyId").val();
+                },
+                select: function (e) {
+                }
+                }));
+                </script>
+
+                <div class="col-xs-4">
+                    <div class="form-group">
+                        <label class="col-xs-3 control-label">物料</label>
+                        <div class="col-xs-9">
+                            <input id="itemDescription" name="itemDescription" data-role="maskedtextbox" type="date"
+                                   style="width: 100%" class="k-textbox"
+
+                                   required data-bind="value: model.itemDescription"/>
+                            <script>
+                                $("#itemDescription").kendoLov($.extend(${lovProvider.getLov(base.contextPath, base.locale, "LOV_ORDER_WL")}, {}));
+                                kendo.bind($('#itemDescription'), viewModel);</script>
+                        </div>
+                    </div>
+                </div>
+
+
+
+
+
+            </div>
+        </div>
+
+    <div class="pull-left" id="toolbar-btn" style="padding-bottom:10px;">
+        <span class="btn btn-primary" style="float:left;width:70px" data-bind="click:query" type="submit"><@spring.message "hap.query"/></span>
+        <button class="btn btn-success k-grid-save-changes"  style="float:left;margin-right:5px;" type="reset">重置</button>
+        <span   class="btn btn-danger" style="float:left;">导出Excel</span>
+    </div>
+    <script>kendo.bind($('#toolbar-btn'), viewModel);</script>
+    </form>
+    <div style="clear:both">
+        <div id="grid"></div>
+    </div>
+</div>
+
+<script type="text/javascript">
+    Hap.initEnterQuery('#query-form', viewModel.query);
+    var BaseUrl = _basePath;
+    dataSource = new kendo.data.DataSource({
+        transport: {
+            read: {
+                url: BaseUrl + "/hap/om/order/headers/query",
+                type: "POST",
+                dataType: "json"
+            },
+            update: {
+                url: BaseUrl + "/hap/om/order/headers/submit",
+                type: "POST",
+                contentType: "application/json"
+            },
+            destroy: {
+                url: BaseUrl + "/hap/om/order/headers/remove",
+                type: "POST",
+                contentType: "application/json"
+            },
+            create: {
+                url: BaseUrl + "/hap/om/order/headers/submit",
+                type: "POST",
+                contentType: "application/json"
+            },
+            parameterMap: function (options, type) {
+                if (type !== "read" && options.models) {
+                    var datas = Hap.prepareSubmitParameter(options, type)
+                    return kendo.stringify(datas);
+                } else if (type === "read") {
+                    return Hap.prepareQueryParameter(viewModel.model.toJSON(), options)
+                }
+            }
+        },
+        batch: true,
+        serverPaging: true,
+        pageSize: 10,
+        schema: {
+            data: 'rows',
+            total: 'total',
+            model: {
+                id: "headerId",
+                fields: {}
+            }
+        }
+    });
+
+    $("#grid").kendoGrid({
+        dataSource: dataSource,
+        resizable: true,
+        scrollable: true,
+        navigatable: false,
+        selectable: 'multiple, rowbox',
+        dataBound: function () {
+            if (parent.autoResizeIframe) {
+                parent.autoResizeIframe('${RequestParameters.functionCode!}')
+            }
+        },
+        pageable: {
+            pageSizes: [5, 10, 20, 50],
+            refresh: true,
+            buttonCount: 5
+        },
+        columns: [
+                    {
+                field: "orderNumber",
+                title: '<@spring.message "omorderheaders.ordernumber"/>',
+                width: 120
+            },
+                    {
+                field: "companyId",
+                title: '<@spring.message "omorderheaders.companyid"/>',
+                width: 120,
+                hidden:true
+            },
+            {
+                field: "companyName",
+                title: '<@spring.message "orgcompanys.companyname"/>',
+                width: 120,
+                template:function(dataItem){
+                    var companyname;
+                    $.ajax({
+                        url:"/hap/org/companys/query?companyId="+dataItem.companyId,
+                        type:"POST",
+                        async:false,
+                        dataType:"json",
+                        success:function(data){
+                            companyname=data.rows[0].companyName;
+                        }
+                    });
+                    return companyname;
+                }
+
+
+
+            },
+                    {
+                field: "orderDate",
+                title: '<@spring.message "omorderheaders.orderdate"/>',
+                width: 120
+            },
+                    {
+                field: "orderStatus",
+                title: '<@spring.message "omorderheaders.orderstatus"/>',
+                width: 120
+            },
+                    {
+                field: "customerId",
+                title: '<@spring.message "omorderheaders.customerid"/>',
+                width: 120,
+                /*hidden:true*/
+            },
+            {
+                field: "customerName",
+                title: '<@spring.message "arcustomers.customername"/>',
+                width: 120,
+                /*template:function(dataItem){
+                    var customername;
+                    $.ajax({
+                        url:"/hap/ar/customers/query?customerId="+dataItem.customerId,
+                        type:"POST",
+                        async:false,
+                        dataType:"json",
+                        success:function(data){
+                            customername=data.rows[0].customerName;
+                        }
+                    });
+                    return customername;
+                }*/
+
+            },
+            {
+                field: "amount",
+                title: '<@spring.message "omorderheaders.amount"/>',
+                width: 120,
+
+            },
+        ],
+        editable: true
+    }).data("kendoGrid");
+
+</script>
+</body>
+</html>

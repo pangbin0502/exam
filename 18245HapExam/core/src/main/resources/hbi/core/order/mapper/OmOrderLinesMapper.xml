@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="hbi.core.order.mapper.OmOrderLinesMapper">
+    <resultMap id="BaseResultMap" type="hbi.core.order.dto.OmOrderLines">
+        <result column="LINE_ID" property="lineId" jdbcType="DECIMAL" />
+        <result column="HEADER_ID" property="headerId" jdbcType="DECIMAL" />
+        <result column="LINE_NUMBER" property="lineNumber" jdbcType="DECIMAL" />
+        <result column="INVENTORY_ITEM_ID" property="inventoryItemId" jdbcType="DECIMAL" />
+        <result column="ORDERD_QUANTITY" property="orderdQuantity" jdbcType="DECIMAL" />
+        <result column="ORDER_QUANTITY_UOM" property="orderQuantityUom" jdbcType="VARCHAR" />
+        <result column="UNIT_SELLING_PRICE" property="unitSellingPrice" jdbcType="DECIMAL" />
+        <result column="DESCRIPTION" property="description" jdbcType="VARCHAR" />
+        <result column="COMPANY_ID" property="companyId" jdbcType="DECIMAL" />
+        <result column="ADDITION1" property="addition1" jdbcType="VARCHAR" />
+        <result column="ADDITION2" property="addition2" jdbcType="VARCHAR" />
+        <result column="ADDITION3" property="addition3" jdbcType="VARCHAR" />
+        <result column="ADDITION4" property="addition4" jdbcType="VARCHAR" />
+        <result column="ADDITION5" property="addition5" jdbcType="VARCHAR" />
+    </resultMap>
+
+
+</mapper>
